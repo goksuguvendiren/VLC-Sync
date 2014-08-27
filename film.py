@@ -44,6 +44,7 @@ class VLC:
 		return time
 
 def getFatihsIP():
+	print "hey"
 	request = urllib2.Request("http://ip.fatihbakir.net/ips.txt")
 	result = urllib2.urlopen(request)
 	string = result.read()
@@ -78,11 +79,11 @@ while(True):
 			fatih.stop()
 			fatihBefore = "stopped"
 		elif goksuInstant == "playing":
-			if (absolute(goksu.getTime - fatih.getTime) > 1):
+			"""if (absolute(goksu.getTime - fatih.getTime) > 1):
 				if fatih.getTime > goksu.getTime:
 					fatih.getTime = goksu.getTime
 				else if goksu.getTime > fatih.getTime:
-					goksu.getTime = fatih.getTime
+					goksu.getTime = fatih.getTime"""
 			fatih.play()
 			fatihBefore = "playing"
 		elif goksuInstant == "paused":
@@ -95,11 +96,11 @@ while(True):
 			goksu.stop()
 			goksuBefore = "stopped"
 		elif fatihInstant == "playing":
-			if (absolute(goksu.getTime - fatih.getTime) > 1):
+			"""if (absolute(goksu.getTime - fatih.getTime) > 1):
 				if fatih.getTime > goksu.getTime:
 					fatih.getTime = goksu.getTime
 				else if goksu.getTime > fatih.getTime:
-					goksu.getTime = fatih.getTime
+					goksu.getTime = fatih.getTime"""
 			goksu.play()
 			goksuBefore = "playing"
 		elif fatihInstant == "paused":
@@ -109,9 +110,10 @@ while(True):
 
 	time.sleep(0.5)
 
-def absolute(number):
+"""def absolute(number):
 	if number > 0 :
 		return number
 	else if number < 0 :
 		return number * (-1)
 	else return 0
+"""
