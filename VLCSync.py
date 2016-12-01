@@ -43,16 +43,20 @@ class VLC:
 		return time
 
 	def sync(self, status, previousStatus):
+		print status + " - " + previousStatus
 		if status == previousStatus:
 			return status
 		else:
 			if status == "stopped":
+				print "in stopped ! "
 				#self.stop()
 				previousStatus = "stopped"
 			elif status == "playing":
+				print "in playing ! "
 				#self.play()
 				previousStatus = "playing"
 			elif status == "paused":
+				print "in paused ! "
 				#self.pause()
 				previousStatus = "paused"
 		return previousStatus

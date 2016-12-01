@@ -58,21 +58,17 @@ def main():
     remoteBefore = "stopped"
 
     while True:
-        rfds,_,_ = select([0, sockfd], [], [])
-        if 0 in rfds:
-            
-            data = sys.stdin.readline()
-            if not data:
-                break
-            sockfd.sendto(data, target)
-
-        elif sockfd in rfds:
+        rfds,_,_ = select([0, sockfd], [], [], 1)
+        if sockfd in rfds:
             data, addr = sockfd.recvfrom(1024)
             data = data.strip()
             remoteBefore = local.sync(data, remoteBefore)
+            sys.stdout.flush()  
 
-            sys.stdout.write(remoteBefore + "\n")
-            sys.stdout.flush()
+        else:
+            data = local.getStatus()
+            localBefore = data
+            sockfd.sendto(data, target)
 
     sockfd.close()
 
