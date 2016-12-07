@@ -9,19 +9,7 @@ from select import select
 import VLC
 import punch
 
-def main(isSim = False):
-    try:
-        master = (sys.argv[1], int(sys.argv[2]))
-        pool = sys.argv[3].strip()
-
-    except (IndexError, ValueError):
-        print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
-        sys.exit(65)
-
-    target, sockfd = punch.connect(pool, master)
-    
-    #Connection Established
-    
+def configuration():
     username = ""
     password = ""
     ip = "localhost"
@@ -38,10 +26,27 @@ def main(isSim = False):
 
     with open("config.json", "r") as config:
         data = json.load(config)
-    
+
     username = data["username"]
     password = data["password"]
-    ip = data["ip"]
+    ip       = data["ip"]
+
+    return username, password, ip
+
+def main(isSim = False):
+    try:
+        master = (sys.argv[1], int(sys.argv[2]))
+        pool = sys.argv[3].strip()
+
+    except (IndexError, ValueError):
+        print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
+        sys.exit(65)
+
+    target, sockfd = punch.connect(pool, master)
+    
+    #Connection Established
+    
+    username, password, ip = configuration()
 
     local = VLC.VLC(ip, password)
 
