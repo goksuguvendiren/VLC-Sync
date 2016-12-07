@@ -55,26 +55,20 @@ def punch(isSim = False):
 
     local = VLCSync.VLC(ip, password)
 
-    localStatus = "stopped"
+    localStatus = local.getStatus()
     remoteStatus = "stopped"
 
     while True:
-        # sockfd.sendto("asdadadssad", target)
+        print localStatus
         rfds,_,_ = select([sockfd], [], [], 1)
-        # print rfds
         if sockfd in rfds:
-            print "if"
             data, addr = sockfd.recvfrom(1024)
             data = data.strip()
-            # print "data : " + data
             if (data[0] == "~"):
-                print "helloooooo :)"
-            remoteStatus = local.sync(data, remoteStatus, isSim)
+                remoteStatus = local.sync(data, remoteStatus, isSim)
             sys.stdout.flush()  
 
         else:
-            # print "nop"
-            print "else"
             data = local.getStatus()
             changed = False
             if (localStatus != data):
@@ -82,7 +76,6 @@ def punch(isSim = False):
                 changed = True
 
             try :
-                # print "send : " + data + " to %s:%d " % target
                 sockfd.sendto(data, target)
             except:
                 print "Could not send data !"
@@ -92,7 +85,7 @@ def punch(isSim = False):
             else:
                 localStatus = data
 
-        time.sleep(1)
+        time.sleep(0.5)
 
 
     sockfd.close()
