@@ -25,13 +25,7 @@ def bytes2addr( bytes ):
     port, = struct.unpack( "H", bytes[-2:] )
     return host, port
 
-def punch(isSim = False):
-    try:
-        master = (sys.argv[1], int(sys.argv[2]))
-        pool = sys.argv[3].strip()
-    except (IndexError, ValueError):
-        print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
-        sys.exit(65)
+def connection(pool, master):
 
     sockfd = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
     sockfd.sendto( pool, master )
@@ -46,6 +40,19 @@ def punch(isSim = False):
     target = bytes2addr(data)
     print >>sys.stderr, "connected to %s:%d" % target
 
+    return target, sockfd
+
+
+
+def punch(isSim = False):
+    try:
+        master = (sys.argv[1], int(sys.argv[2]))
+        pool = sys.argv[3].strip()
+    except (IndexError, ValueError):
+        print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
+        sys.exit(65)
+
+    target, sockfd = connection(pool, master)
     #Connection Established
 
     username = ""
