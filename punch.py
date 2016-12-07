@@ -22,21 +22,21 @@ def bytes2addr( bytes ):
     return host, port
 
 def connect(pool, master):
-
     sockfd = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
     sockfd.sendto( pool, master )
+
     data, addr = sockfd.recvfrom( len(pool)+3 )
     if data != "ok "+pool:
         print >> sys.stderr, "unable to request!"
         sys.exit(1)
+
     sockfd.sendto( "ok", master )
     print >> sys.stderr, "request sent, waiting for partner in pool '%s'..." % pool
+    
     data, addr = sockfd.recvfrom( 6 )
-
     target = bytes2addr(data)
     print >> sys.stderr, "connected to %s:%d" % target
 
     return target, sockfd
-
 
 # vim: expandtab shiftwidth=4 softtabstop=4 textwidth=79:

@@ -1,31 +1,33 @@
 #!/usr/bin/python
 import time
 import sys
+from getpass import getpass
 from select import select
 
 import VLC
 import punch
+import config
 
 def main(isSim = False):
     try:
-        master = (sys.argv[1], int(sys.argv[2]))
-        pool = sys.argv[3].strip()
+        pool = sys.argv[1].strip()
 
     except (IndexError, ValueError):
         print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
         sys.exit(65)
-
-    target, sockfd = punch.connect(pool, master)
     
     #Connection Established
+    conf = config.config()
+    conf.configure()
+    
+    master = (conf.host, conf.port)
 
-    username = ""
-    password = "1234"
-    ip = "localhost"
+    target, sockfd = punch.connect(pool, master)
 
-    local = VLC.VLC(ip, password)
+    local = VLC.VLC(conf.ip, conf.password)
 
     localStatus = local.getStatus()
+    remoteStatus = "stopped"
 
     while True:
         rfds,_,_ = select([sockfd], [], [], 0.5)
