@@ -1,3 +1,4 @@
 import punch
 
-punch.punch(True);
+simulator = True
+punch.punch(simulator);
