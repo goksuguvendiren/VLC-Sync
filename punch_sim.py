@@ -1,4 +1,5 @@
-import punch
+#!/usr/bin/python
+import sync
 
 simulator = True
-punch.punch(simulator);
+sync.main(simulator);

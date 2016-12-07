@@ -43,71 +43,19 @@ class VLC:
 		return time
 
 	def sync(self, status, previousStatus, isSim = False):
-		# print status + " - " + previousStatus
 		if status == previousStatus:
 			return status
 		else:
 			if status == "stopped":
-				# print "in stopped ! "
 				if (not isSim):
 					self.stop()
 				previousStatus = "stopped"
 			elif status == "playing":
-				# print "in playing ! "
 				if (not isSim):
 					self.play()
 				previousStatus = "playing"
 			elif status == "paused":
-				print "in paused ! "
 				if (not isSim):
 					self.pause()
-				# previousStatus = "paused"
+				previousStatus = "paused"
 		return previousStatus
-
-
-def func():
-	user = raw_input("Enter your VLC password:\n")
-
-	ip = raw_input("Enter the ip of the user:\n")
-	passwd = raw_input("Password:\n")
-
-	remote = VLC(ip, passwd)
-	local = VLC("localhost", user)
-	print local.ip
-	print remote.ip
-
-	localBefore = local.getStatus()
-	remoteBefore = remote.getStatus()
-
-	while(True):
-		localInstant = local.getStatus()
-		remoteInstant = remote.getStatus()
-
-		print localBefore + "-" + localInstant
-		print remoteBefore + "-" + remoteInstant
-
-		if localInstant != localBefore:
-			if localInstant == "stopped":
-				remote.stop()
-				remoteBefore = "stopped"
-			elif localInstant == "playing":
-				remote.play()
-				remoteBefore = "playing"
-			elif localInstant == "paused":
-				remote.pause()
-				remoteBefore = "paused"
-			localBefore = localInstant
-
-		elif remoteInstant != remoteBefore:
-			if remoteInstant == "stopped":
-				local.stop()
-				localBefore = "stopped"
-			elif remoteInstant == "playing":
-				local.play()
-				localBefore = "playing"
-			elif remoteInstant == "paused":
-				local.pause()
-				localBefore = "paused"
-			remoteBefore = remoteInstant
-
-		time.sleep(0.5)

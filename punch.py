@@ -11,11 +11,7 @@
 
 import sys
 import socket
-from select import select
 import struct
-import time
-
-import VLCSync
 
 def bytes2addr( bytes ):
     """Convert a hash to an address pair."""
@@ -25,7 +21,7 @@ def bytes2addr( bytes ):
     port, = struct.unpack( "H", bytes[-2:] )
     return host, port
 
-def connection(pool, master):
+def connect(pool, master):
 
     sockfd = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
     sockfd.sendto( pool, master )
@@ -38,66 +34,9 @@ def connection(pool, master):
     data, addr = sockfd.recvfrom( 6 )
 
     target = bytes2addr(data)
-    print >>sys.stderr, "connected to %s:%d" % target
+    print >> sys.stderr, "connected to %s:%d" % target
 
     return target, sockfd
 
-
-
-def punch(isSim = False):
-    try:
-        master = (sys.argv[1], int(sys.argv[2]))
-        pool = sys.argv[3].strip()
-    except (IndexError, ValueError):
-        print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
-        sys.exit(65)
-
-    target, sockfd = connection(pool, master)
-    #Connection Established
-
-    username = ""
-    password = "1234"
-    ip = "localhost"
-    pool = "10"
-
-    local = VLCSync.VLC(ip, password)
-
-    localStatus = local.getStatus()
-    remoteStatus = "stopped"
-
-    while True:
-        print localStatus
-        rfds,_,_ = select([sockfd], [], [], 1)
-        if sockfd in rfds:
-            data, addr = sockfd.recvfrom(1024)
-            data = data.strip()
-            if (data[0] == "~"):
-                remoteStatus = local.sync(data, remoteStatus, isSim)
-            sys.stdout.flush()  
-
-        else:
-            data = local.getStatus()
-            changed = False
-            if (localStatus != data):
-                data = "~" + data
-                changed = True
-
-            try :
-                sockfd.sendto(data, target)
-            except:
-                print "Could not send data !"
-
-            if changed:
-                localStatus = data[1:]
-            else:
-                localStatus = data
-
-        time.sleep(0.5)
-
-
-    sockfd.close()
-
-if __name__ == "__main__":
-    punch()
 
 # vim: expandtab shiftwidth=4 softtabstop=4 textwidth=79:
