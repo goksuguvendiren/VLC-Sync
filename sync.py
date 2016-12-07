@@ -31,24 +31,18 @@ def configuration():
     password = data["password"]
     ip       = data["ip"]
 
-    return username, password, ip
 
 def main(isSim = False):
     try:
-        master = (sys.argv[1], int(sys.argv[2]))
-        pool = sys.argv[3].strip()
 
     except (IndexError, ValueError):
         print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
         sys.exit(65)
 
-    target, sockfd = punch.connect(pool, master)
     
     #Connection Established
     
-    username, password, ip = configuration()
 
-    local = VLC.VLC(ip, password)
 
     localStatus = local.getStatus()
     remoteStatus = "stopped"

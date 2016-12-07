@@ -1,5 +1,7 @@
 {
     "ip": "localhost", 
     "password": "1234", 
-    "username": ""
+    "username": "",
+    "host": "fatihbakir.net",
+    "port": "4653"
 }
