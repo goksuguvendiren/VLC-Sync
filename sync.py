@@ -1,6 +1,9 @@
 #!/usr/bin/python
 import time
 import sys
+import json
+import os.path
+from getpass import getpass
 from select import select
 
 import VLC
@@ -18,14 +21,32 @@ def main(isSim = False):
     target, sockfd = punch.connect(pool, master)
     
     #Connection Established
-
+    
     username = ""
-    password = "1234"
+    password = ""
     ip = "localhost"
+
+    if not os.path.isfile("config.json"):
+        username = raw_input("Username: ")
+        password = getpass('Password: ')
+        ip = raw_input("Ip: ")
+
+        data = {"username": username, "password": password, "ip": ip}
+
+        with open("config.json", "w") as config:
+            json.dump(data, config, sort_keys = True, indent = 4,)
+
+    with open("config.json", "r") as config:
+        data = json.load(config)
+    
+    username = data["username"]
+    password = data["password"]
+    ip = data["ip"]
 
     local = VLC.VLC(ip, password)
 
     localStatus = local.getStatus()
+    remoteStatus = "stopped"
 
     while True:
         rfds,_,_ = select([sockfd], [], [], 0.5)
