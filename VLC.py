@@ -48,14 +48,17 @@ class VLC:
 		else:
 			if status == "stopped":
 				if (not isSim):
+					print "Changing : stop"
 					self.stop()
 				previousStatus = "stopped"
 			elif status == "playing":
 				if (not isSim):
+					print "Changing : play"
 					self.play()
 				previousStatus = "playing"
 			elif status == "paused":
 				if (not isSim):
+					print "Changing : pause"
 					self.pause()
 				previousStatus = "paused"
 		return previousStatus

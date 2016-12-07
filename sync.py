@@ -22,7 +22,6 @@ def main(isSim = False):
     username = ""
     password = "1234"
     ip = "localhost"
-    pool = "10"
 
     local = VLC.VLC(ip, password)
 
@@ -30,13 +29,12 @@ def main(isSim = False):
     remoteStatus = "stopped"
 
     while True:
-        print localStatus
         rfds,_,_ = select([sockfd], [], [], 0.5)
         if sockfd in rfds:
             data, addr = sockfd.recvfrom(1024)
             data = data.strip()
             if (data[0] == "~"):
-                remoteStatus = local.sync(data, remoteStatus, isSim)
+                remoteStatus = local.sync(data[1:], remoteStatus, isSim)
             sys.stdout.flush()
 
         else:
