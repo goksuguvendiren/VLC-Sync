@@ -1,48 +1,30 @@
 #!/usr/bin/python
 import time
 import sys
-import json
-import os.path
 from getpass import getpass
 from select import select
 
 import VLC
 import punch
-
-def configuration():
-    username = ""
-    password = ""
-    ip = "localhost"
-
-    if not os.path.isfile("config.json"):
-        username = raw_input("Username: ")
-        password = getpass('Password: ')
-        ip = raw_input("Ip: ")
-
-        data = {"username": username, "password": password, "ip": ip}
-
-        with open("config.json", "w") as config:
-            json.dump(data, config, sort_keys = True, indent = 4,)
-
-    with open("config.json", "r") as config:
-        data = json.load(config)
-
-    username = data["username"]
-    password = data["password"]
-    ip       = data["ip"]
-
+import config
 
 def main(isSim = False):
     try:
+        pool = sys.argv[1].strip()
 
     except (IndexError, ValueError):
         print >> sys.stderr, "usage: %s <host> <port> <pool>" % sys.argv[0]
         sys.exit(65)
-
     
     #Connection Established
+    conf = config.config()
+    conf.configure()
     
+    master = (conf.host, conf.port)
 
+    target, sockfd = punch.connect(pool, master)
+
+    local = VLC.VLC(conf.ip, conf.password)
 
     localStatus = local.getStatus()
     remoteStatus = "stopped"
