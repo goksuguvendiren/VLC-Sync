@@ -26,7 +26,6 @@ def main(isSim = False):
     local = VLC.VLC(ip, password)
 
     localStatus = local.getStatus()
-    remoteStatus = "stopped"
 
     while True:
         rfds,_,_ = select([sockfd], [], [], 0.5)
@@ -34,7 +33,7 @@ def main(isSim = False):
             data, addr = sockfd.recvfrom(1024)
             data = data.strip()
             if (data[0] == "~"):
-                remoteStatus = local.sync(data[1:], remoteStatus, isSim)
+                localStatus = local.sync(data[1:], remoteStatus, isSim)
             sys.stdout.flush()
 
         else:
