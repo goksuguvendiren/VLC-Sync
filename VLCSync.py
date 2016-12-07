@@ -42,22 +42,25 @@ class VLC:
 		time = newPage['time']
 		return time
 
-	def sync(self, status, previousStatus):
-		print status + " - " + previousStatus
+	def sync(self, status, previousStatus, isSim = False):
+		# print status + " - " + previousStatus
 		if status == previousStatus:
 			return status
 		else:
 			if status == "stopped":
 				# print "in stopped ! "
-				self.stop()
+				if (not isSim):
+					self.stop()
 				previousStatus = "stopped"
 			elif status == "playing":
 				# print "in playing ! "
-				self.play()
+				if (not isSim):
+					self.play()
 				previousStatus = "playing"
 			elif status == "paused":
 				print "in paused ! "
-				self.pause()
+				if (not isSim):
+					self.pause()
 				# previousStatus = "paused"
 		return previousStatus
 

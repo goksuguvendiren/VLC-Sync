@@ -13,6 +13,7 @@ import sys
 import socket
 from select import select
 import struct
+import time
 
 import VLCSync
 
@@ -24,7 +25,7 @@ def bytes2addr( bytes ):
     port, = struct.unpack( "H", bytes[-2:] )
     return host, port
 
-def main():
+def punch(isSim = False):
     try:
         master = (sys.argv[1], int(sys.argv[2]))
         pool = sys.argv[3].strip()
@@ -54,25 +55,49 @@ def main():
 
     local = VLCSync.VLC(ip, password)
 
-    localBefore = "stopped"
-    remoteBefore = "stopped"
+    localStatus = "stopped"
+    remoteStatus = "stopped"
 
     while True:
-        rfds,_,_ = select([0, sockfd], [], [], 1)
+        # sockfd.sendto("asdadadssad", target)
+        rfds,_,_ = select([sockfd], [], [], 1)
+        # print rfds
         if sockfd in rfds:
+            print "if"
             data, addr = sockfd.recvfrom(1024)
             data = data.strip()
-            remoteBefore = local.sync(data, remoteBefore)
+            # print "data : " + data
+            if (data[0] == "~"):
+                print "helloooooo :)"
+            remoteStatus = local.sync(data, remoteStatus, isSim)
             sys.stdout.flush()  
 
         else:
+            # print "nop"
+            print "else"
             data = local.getStatus()
-            localBefore = data
-            sockfd.sendto(data, target)
+            changed = False
+            if (localStatus != data):
+                data = "~" + data
+                changed = True
+
+            try :
+                # print "send : " + data + " to %s:%d " % target
+                sockfd.sendto(data, target)
+            except:
+                print "Could not send data !"
+
+            if changed:
+                localStatus = data[1:]
+            else:
+                localStatus = data
+
+        time.sleep(1)
+
 
     sockfd.close()
 
 if __name__ == "__main__":
-    main()
+    punch()
 
 # vim: expandtab shiftwidth=4 softtabstop=4 textwidth=79:
